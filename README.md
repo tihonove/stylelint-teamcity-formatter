@@ -4,7 +4,7 @@
 
 Formats [stylelint](http://stylelint.io/) errors for teamcity.
 
-[![Teamcity example](https://cloud.githubusercontent.com/assets/2770182/19703724/4cba1286-9b1e-11e6-9940-9a0f68c4adbe.png)]
+![Teamcity example](https://cloud.githubusercontent.com/assets/2770182/19703724/4cba1286-9b1e-11e6-9940-9a0f68c4adbe.png)
 
 ## Install
 
