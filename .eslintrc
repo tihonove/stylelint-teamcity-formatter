@@ -1,0 +1,8 @@
+{
+    "extends": [
+        "skbkontur-retail"
+    ],
+    "rules": {
+        "no-console": 0
+    }
+}
