@@ -2,7 +2,7 @@
   "name": "stylelint-teamcity-formatter",
   "version": "1.0.0",
   "description": "Teamcity formatter for stylelint",
-  "main": "lib/index.js",
+  "main": "index.js",
   "author": "tihonove <tihonov.ea@gmail.com>",
   "contributors": [
     {
