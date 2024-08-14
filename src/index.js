@@ -24,8 +24,6 @@ function groupBy(array, propertyPicker) {
     return Object.keys(groups).map(group => groups[group]);
 }
 
-const reportName = 'StyleLint Violations';
-
 export default function teamcityFormatter(allResults) {
     const output = [];
 
@@ -33,31 +31,37 @@ export default function teamcityFormatter(allResults) {
         x.source = x.source.replace(process.cwd(), '').replace(/^\\/, '');
     });
 
-    output.push(`##teamcity[testSuiteStarted name='${reportName}']`);
-
     const groupedResults = groupBy(allResults, x => x.source);
+    const reportedRules = new Set();
 
     for (const results of groupedResults) {
-        const testNameEscaped = reportName + ': ' + escapeTeamCityString(results[0].source);
-
-        output.push(`##teamcity[testStarted name='${testNameEscaped}']`);
-
         if (results.reduce((x, y) => x || y.errored, false)) {
-            const message = results
-                .map(result => result.warnings
-                    .map(warning => `${warning.text} at (${warning.line}, ${warning.column})`)
-                    .join('\n'))
-                .join('\n');
 
-            output.push(
-                `##teamcity[testFailed name='${testNameEscaped}'` +
-                ` message='${escapeTeamCityString(message)}']`);
+            for (let result of results) {
+                for (let warning of result.warnings) {
+                    if (!reportedRules.has(warning.rule)) {
+                        reportedRules.add(warning.rule);
+                        output.push(
+                            `##teamcity[inspectionType ` +
+                            `id='${escapeTeamCityString(warning.rule)}' ` +
+                            `name='${escapeTeamCityString(warning.rule)}' ` +
+                            `description='<a href="${escapeTeamCityString("https://stylelint.io/user-guide/rules/" + warning.rule)}">${escapeTeamCityString(warning.rule)}</a>' ` +
+                            `category='Stylelint rules violations']`
+                        );
+
+                    }
+
+                    output.push(
+                        `##teamcity[inspection typeId='${escapeTeamCityString(warning.rule)}' ` +
+                        `message='${escapeTeamCityString(warning.text)}' ` +
+                        `file='${escapeTeamCityString(results[0].source)}' ` +
+                        `line='${warning.line}' ` +
+                        `SEVERITY='${warning.severity ? warning.severity.toUpperCase() : "ERROR"}']`
+                    );
+                }
+            }
         }
-
-        output.push(`##teamcity[testFinished name='${testNameEscaped}']`);
     }
-
-    output.push(`##teamcity[testSuiteFinished name='${reportName}']`);
 
     return output.join('\n');
 }
