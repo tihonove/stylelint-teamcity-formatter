@@ -1,3 +1,6 @@
 node_modules
 npm-debug.log
 /index.js
+.idea/*
+.npmrc
+package-lock.json
