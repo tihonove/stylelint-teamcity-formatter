@@ -12,7 +12,8 @@
   ],
   "license": "WTFPL",
   "scripts": {
-    "compile": "rimraf index.js && babel -d . src/",
+    "build": "rimraf index.js && babel -d . src/",
+    "watch": "rimraf index.js && babel --watch -d . src/",
     "prepublish": "npm run compile"
   },
   "repository": {
