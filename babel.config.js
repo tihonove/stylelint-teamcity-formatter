@@ -8,4 +8,6 @@ export default {
       },
     ],
   ],
+  // Ensure CommonJS build exposes default export via module.exports
+  plugins: process.env.BABEL_ENV === 'cjs' ? ['add-module-exports'] : [],
 };
