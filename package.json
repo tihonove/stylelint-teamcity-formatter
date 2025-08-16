@@ -1,6 +1,6 @@
 {
   "name": "stylelint-teamcity-formatter",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Teamcity formatter for stylelint",
   "main": "index.cjs",
   "module": "index.js",
@@ -17,8 +17,8 @@
     }
   ],
   "scripts": {
-  "build:cjs": "BABEL_ENV=cjs babel src/index.js --out-file index.cjs",
-  "build:esm": "BABEL_ENV=esm babel src/index.js --out-file index.js",
+    "build:cjs": "BABEL_ENV=cjs babel src/index.js --out-file index.cjs",
+    "build:esm": "BABEL_ENV=esm babel src/index.js --out-file index.js",
     "build": "npm run build:cjs && npm run build:esm",
     "prepublish": "npm run build"
   },
