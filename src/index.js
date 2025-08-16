@@ -1,3 +1,7 @@
+import fs from 'fs';
+
+const reportName = 'Stylelint';
+
 function escapeTeamCityString(str) {
     if (!str) {
         return '';
@@ -27,10 +31,23 @@ function groupBy(array, propertyPicker) {
 export default function teamcityFormatter(allResults) {
     const packageJsonConfig = loadPackageJsonConfig();
     const outputType = packageJsonConfig.output || process.env.STYLELINT_TEAMCITY_FORMATTER_OUTPUT || "inspections";
-    if (outputType == "errors") {
-        formatAsErrors(allResults);
+    let output = '';
+    if (outputType === "errors") {
+        output = formatAsErrors(allResults);
+    } else {
+        output = formatAsInspections(allResults);
     }
-    formatAsInspections(allResults);
+
+    if (packageJsonConfig.statistics) {
+        const { errors, warnings } = calculateStats(allResults);
+        const statsLines = [
+            `##teamcity[buildStatisticValue key='stylelint.errors' value='${errors}']`,
+            `##teamcity[buildStatisticValue key='stylelint.warnings' value='${warnings}']`
+        ];
+        output = [output, ...statsLines].filter(Boolean).join('\n');
+    }
+
+    return output;
 }
 
 function formatAsInspections(allResults) {
@@ -109,6 +126,18 @@ function formatAsErrors(allResults) {
     output.push(`##teamcity[testSuiteFinished name='${reportName}']`);
 
     return output.join('\n');
+}
+
+function calculateStats(allResults) {
+    let errors = 0;
+    let warnings = 0;
+    for (const result of allResults) {
+        for (const w of result.warnings || []) {
+            const sev = (w.severity || 'error').toString().toLowerCase();
+            if (sev === 'warning') warnings++; else errors++;
+        }
+    }
+    return { errors, warnings };
 }
 
 function loadPackageJsonConfig() {

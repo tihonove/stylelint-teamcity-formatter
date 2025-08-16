@@ -60,6 +60,29 @@ TeamCity docs:
 - Reporting Tests via Service Messages: https://www.jetbrains.com/help/teamcity/service-messages.html#Reporting+Tests
 - Build Results Page — Tests tab: https://www.jetbrains.com/help/teamcity/build-results-page.html#Tests+Tab
 
+## Optional build statistics
+
+Enable simple counters of Stylelint findings as TeamCity build statistics values. These can be used in the Build Overview, Charts, and Build Failure Conditions.
+
+Configure via package.json:
+
+```json
+{
+	"stylelint-teamcity-formatter": {
+		"statistics": true
+	}
+}
+```
+
+When enabled, the formatter additionally prints service messages:
+
+- `##teamcity[buildStatisticValue key='stylelint.errors' value='<number>']`
+- `##teamcity[buildStatisticValue key='stylelint.warnings' value='<number>']`
+
+Notes:
+- The counters are derived from Stylelint warnings by severity: anything with severity `warning` counts as a warning; everything else counts as an error.
+- Works with both output modes (inspections and tests). The statistics lines are appended at the end of the formatter output.
+
 ## Why use this formatter
 
 - Native TeamCity Inspections integration via service messages: CSS/SCSS/Sass lint warnings and errors are reported as inspections with file, line, and severity.
