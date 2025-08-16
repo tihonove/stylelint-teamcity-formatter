@@ -1,6 +1,6 @@
 {
   "name": "stylelint-teamcity-formatter",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Teamcity formatter for stylelint",
   "main": "index.cjs",
   "module": "index.js",
