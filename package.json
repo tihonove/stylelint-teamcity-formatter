@@ -29,10 +29,12 @@
   "bugs": {
     "url": "https://github.com/tihonove/stylelint-teamcity-formatter/issues"
   },
+  "license": "CC0-1.0",
   "files": [
     "index.js",
     "index.cjs",
-    "src/"
+    "src/",
+    "LICENSE"
   ],
   "devDependencies": {
     "@babel/cli": "^7.28.3",
