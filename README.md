@@ -52,6 +52,8 @@ Or via environment variable:
 STYLELINT_TEAMCITY_FORMATTER_OUTPUT=errors stylelint <options> --custom-formatter stylelint-teamcity-formatter
 ```
 
+![TeamCity tests page](docs/tests-page.png)
+
 Notes:
 - inspections mode uses TeamCity Service Messages for Inspections.
 - tests mode uses TeamCity Test reporting messages, so you can ignore/mute tests, assign investigations, and explore history on the Tests tab.
