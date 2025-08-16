@@ -25,6 +25,15 @@ function groupBy(array, propertyPicker) {
 }
 
 export default function teamcityFormatter(allResults) {
+    const packageJsonConfig = loadPackageJsonConfig();
+    const outputType = packageJsonConfig.output || process.env.STYLELINT_TEAMCITY_FORMATTER_OUTPUT || "inspections";
+    if (outputType == "errors") {
+        formatAsErrors(allResults);
+    }
+    formatAsInspections(allResults);
+}
+
+function formatAsInspections(allResults) {
     const output = [];
 
     allResults.forEach(x => {
@@ -64,4 +73,49 @@ export default function teamcityFormatter(allResults) {
     }
 
     return output.join('\n');
+}
+
+function formatAsErrors(allResults) {
+    const output = [];
+
+    allResults.forEach(x => {
+        x.source = x.source.replace(process.cwd(), '').replace(/^\\/, '');
+    });
+
+    output.push(`##teamcity[testSuiteStarted name='${reportName}']`);
+
+    const groupedResults = groupBy(allResults, x => x.source);
+
+    for (const results of groupedResults) {
+        const testNameEscaped = reportName + ': ' + escapeTeamCityString(results[0].source);
+
+        output.push(`##teamcity[testStarted name='${testNameEscaped}']`);
+
+        if (results.reduce((x, y) => x || y.errored, false)) {
+            const message = results
+                .map(result => result.warnings
+                    .map(warning => `${warning.text} at (${warning.line}, ${warning.column})`)
+                    .join('\n'))
+                .join('\n');
+
+            output.push(
+                `##teamcity[testFailed name='${testNameEscaped}'` +
+                ` message='${escapeTeamCityString(message)}']`);
+        }
+
+        output.push(`##teamcity[testFinished name='${testNameEscaped}']`);
+    }
+
+    output.push(`##teamcity[testSuiteFinished name='${reportName}']`);
+
+    return output.join('\n');
+}
+
+function loadPackageJsonConfig() {
+    try {
+        const packageJson = JSON.parse(fs.readFileSync("package.json"));
+        return packageJson["stylelint-teamcity-formatter"] || {};
+    } catch (e) {
+        return {};
+    }
 }

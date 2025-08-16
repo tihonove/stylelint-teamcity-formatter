@@ -29,6 +29,37 @@ stylelint <options> --custom-formatter node_modules/stylelint-teamcity-formatter
 
 This formatter reports issues as TeamCity Inspections via service messages. See TeamCity docs: https://www.jetbrains.com/help/teamcity/service-messages.html#Reporting+Inspections
 
+## Output modes: Inspections vs Tests
+
+You can choose how Stylelint results are reported in TeamCity:
+
+- inspections (default): shows findings on the Code Inspection tab and as metrics.
+- tests: reports findings as tests on the Tests tab (useful for ignore/mute/investigate flows and viewing test history).
+
+Configure via package.json (takes precedence):
+
+```json
+{
+	"stylelint-teamcity-formatter": {
+		"output": "inspections" // or "errors" for Tests mode
+	}
+}
+```
+
+Or via environment variable:
+
+```bash
+STYLELINT_TEAMCITY_FORMATTER_OUTPUT=errors stylelint <options> --custom-formatter stylelint-teamcity-formatter
+```
+
+Notes:
+- inspections mode uses TeamCity Service Messages for Inspections.
+- tests mode uses TeamCity Test reporting messages, so you can ignore/mute tests, assign investigations, and explore history on the Tests tab.
+
+TeamCity docs:
+- Reporting Tests via Service Messages: https://www.jetbrains.com/help/teamcity/service-messages.html#Reporting+Tests
+- Build Results Page — Tests tab: https://www.jetbrains.com/help/teamcity/build-results-page.html#Tests+Tab
+
 ## Why use this formatter
 
 - Native TeamCity Inspections integration via service messages: CSS/SCSS/Sass lint warnings and errors are reported as inspections with file, line, and severity.
