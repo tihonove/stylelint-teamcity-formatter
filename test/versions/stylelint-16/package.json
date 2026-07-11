@@ -1,0 +1,8 @@
+{
+  "name": "stylelint-teamcity-formatter-test-v16",
+  "private": true,
+  "dependencies": {
+    "stylelint": "^16",
+    "stylelint-teamcity-formatter": "file:../../.."
+  }
+}
